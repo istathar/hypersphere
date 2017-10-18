@@ -1,0 +1,67 @@
+-- | This module provides functions for sampling models to determine their
+-- probability distributions.
+module Hypersphere.Sample where
+
+import Hypersphere.Check
+import Control.Monad.Bayes.Class
+import Control.Monad.Bayes.Helpers
+import Control.Monad.Bayes.Sampler
+import Control.Monad.Bayes.Inference
+import qualified Graphics.Rendering.Chart.Easy as C
+import qualified Graphics.Rendering.Chart.Backend.Diagrams as C
+import Data.Default
+import qualified Data.Set as Set
+import qualified Data.Map as Map
+import Data.Text (Text)
+import qualified Data.Text as Text
+import Data.Ord
+import Data.List
+import Data.Maybe
+import Text.Printf
+
+-- | Runs a *quick* Sequential Monte Carlo simulation on the provided
+-- distribution. Useful for quickly checking results. The return values
+-- are the probability distribution of the result.
+quickSample :: Ord a => S (P SamplerIO) a -> IO [(a, Double)]
+quickSample = sampleIO . smcMultinomial' 0 1000
+
+-- | Similar to @quickSample@ but assumes the result is a @Status@ and
+-- formats the output so you can easily check the highest risk items.
+quickCheck :: S (P SamplerIO) Status -> IO (Double, [(Text, Double)])
+quickCheck m = do
+    r <- quickSample m
+    let
+        m = sortBy (comparing $ Down . snd)
+            $ Map.toList
+            $ Map.fromListWith (+)
+                [(formatReason reason, prob) | (reasons, prob) <- r, reason <- Set.toList $ getReasons reasons]
+    return (fromMaybe 0 $ lookup okStatus r, m)
+
+-- | Does a @quickCheck@ and prints the results.
+quickCheckPrint :: S (P SamplerIO) Status -> IO ()
+quickCheckPrint m = do
+    (ok,problems) <- quickCheck m
+    printf "Service is up with probability: %0.3f\n\n" ok
+    printf "Risk items:\n"
+    mapM_ (uncurry . flip $ printf "  %6.3f\t%s\n") problems
+
+-- | Like @quickSample@, but plots the distribution.
+quickPlot :: C.PlotValue a => FilePath -> String -> S (P SamplerIO) a -> IO ()
+quickPlot file title m = do
+    dat <- quickSample m
+    C.toFile C.def file $ do
+        C.layout_title C..= title
+        C.plot (C.plotBars <$> C.bars [""] [(x,[y]) | (x,y) <- dat])
+
+-- | Does a simple bucketing procedure on the output by rounding it to the
+-- nearest multiple of `n`.
+--
+-- Compare
+--
+-- >>> quickPlot "example.svg" "An Example" $ normal 0 100
+-- 
+-- and
+--
+-- >>> quickPlot "example.svg" "An Example" $ rounding 10 <$> normal 0 100
+rounding :: Double -> Double -> Double
+rounding n i = n * fromIntegral (round (i / n) :: Integer)
