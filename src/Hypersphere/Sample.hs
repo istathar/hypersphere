@@ -2,21 +2,21 @@
 -- probability distributions.
 module Hypersphere.Sample where
 
-import Hypersphere.Check
 import Control.Monad.Bayes.Class
 import Control.Monad.Bayes.Helpers
-import Control.Monad.Bayes.Sampler
 import Control.Monad.Bayes.Inference
-import qualified Graphics.Rendering.Chart.Easy as C
-import qualified Graphics.Rendering.Chart.Backend.Diagrams as C
+import Control.Monad.Bayes.Sampler
 import Data.Default
-import qualified Data.Set as Set
+import Data.List
 import qualified Data.Map as Map
+import Data.Maybe
+import Data.Ord
+import qualified Data.Set as Set
 import Data.Text (Text)
 import qualified Data.Text as Text
-import Data.Ord
-import Data.List
-import Data.Maybe
+import qualified Graphics.Rendering.Chart.Backend.Diagrams as C
+import qualified Graphics.Rendering.Chart.Easy as C
+import Hypersphere.Check
 import Text.Printf
 
 -- | Runs a *quick* Sequential Monte Carlo simulation on the provided

@@ -23,16 +23,16 @@ module Hypersphere.PhysicalInput
     , maintainCluster
     ) where
 
-import Data.Proxy
-import Data.Vector (Vector)
-import GHC.Generics
 import Control.Monad.Bayes.Class
-import Data.Maybe
 import Data.Aeson
-import Data.Text (Text)
 import Data.Map (Map)
 import qualified Data.Map as Map
+import Data.Maybe
+import Data.Proxy
+import Data.Text (Text)
 import Data.Type.Bool
+import Data.Vector (Vector)
+import GHC.Generics
 
 -- TODO: Is this module actually generic enough to be useful, or is this
 -- specific to each use case.

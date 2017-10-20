@@ -2,14 +2,14 @@
 {-# LANGUAGE RecordWildCards #-}
 module Main where
 
-import Control.Monad.Bayes.Class
 import Control.Monad
-import Hypersphere.PhysicalInput
-import Hypersphere.Check
-import Hypersphere.Sample
+import Control.Monad.Bayes.Class
 import qualified Data.Map as Map
-import Text.Printf
 import qualified Data.Text as Text
+import Hypersphere.Check
+import Hypersphere.PhysicalInput
+import Hypersphere.Sample
+import Text.Printf
 
 
 ----------------------------------------------------------------

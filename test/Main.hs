@@ -1,10 +1,10 @@
 module Main where
 
+import qualified Data.Aeson as Aeson
+import Hypersphere.Check
+import Test.QuickCheck.Instances ()
 import Test.Tasty
 import Test.Tasty.QuickCheck as QC
-import Test.QuickCheck.Instances ()
-import Hypersphere.Check
-import qualified Data.Aeson as Aeson
 
 main = defaultMain tests
 

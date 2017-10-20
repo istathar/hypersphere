@@ -16,20 +16,20 @@ module Hypersphere.Check
     , okStatus
     ) where
 
+import Control.Lens
 import Control.Monad.State.Strict
 import Control.Monad.Writer.Strict
-import GHC.Generics
 import Data.Aeson
-import Data.Text (Text)
-import qualified Data.Text as Text
-import qualified Data.Text.Lazy.Builder as B
-import qualified Data.Text.Lazy as LText
-import Data.Word
+import Data.Attoparsec.Text
 import Data.Monoid
 import Data.Set (Set)
 import qualified Data.Set as Set
-import Control.Lens
-import Data.Attoparsec.Text
+import Data.Text (Text)
+import qualified Data.Text as Text
+import qualified Data.Text.Lazy as LText
+import qualified Data.Text.Lazy.Builder as B
+import Data.Word
+import GHC.Generics
 
 -- | The status of a service is represented as a @Set@ of reasons why
 -- the service is considered "down". An empty set corresponds to the
