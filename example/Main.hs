@@ -25,14 +25,14 @@ exampleDisk = Disk
 exampleWorkerNode :: Node
 exampleWorkerNode = Node
     { nodeMaintenance = Maintenance {mttf = years 7, mttr = days 30}
-    , disks = replicate 2 exampleDisk
+    , disks = replicate 4 exampleDisk
     , role = ["Worker", "Storage"]
     }
 
 exampleLeaderNode :: Node
 exampleLeaderNode = Node
     { nodeMaintenance = Maintenance {mttf = years 7, mttr = days 10}
-    , disks = replicate 1 exampleDisk { diskMaintenance = (diskMaintenance exampleDisk) {mttr = days 3}}
+    , disks = replicate 4 exampleDisk { diskMaintenance = (diskMaintenance exampleDisk) {mttr = days 3}}
     , role = ["Leader"]
     }
 
@@ -41,7 +41,7 @@ exampleRack = Rack
     { rackMaintenance = Maintenance {mttf = years 2, mttr = days 2}
     , nodes = Map.fromList $
         [ (Text.pack $ printf "worker%02d" n, exampleWorkerNode)
-        | n <- [1..2 :: Int]
+        | n <- [1..18 :: Int]
         ] ++
         [ ("leader01", exampleLeaderNode)
         ]
@@ -51,7 +51,7 @@ cluster :: Cluster
 cluster = Cluster
     { racks = Map.fromList
         [ (Text.pack $ printf "rack%02d" n, exampleRack)
-        | n <- [1..2 :: Int]
+        | n <- [1..8 :: Int]
         ]
     }
 
