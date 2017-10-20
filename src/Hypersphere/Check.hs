@@ -24,6 +24,7 @@ import Data.Text (Text)
 import qualified Data.Text as Text
 import qualified Data.Text.Lazy.Builder as B
 import qualified Data.Text.Lazy as LText
+import Data.Word
 import Data.Monoid
 import Data.Set (Set)
 import qualified Data.Set as Set
@@ -52,10 +53,10 @@ singleton = Status . Set.singleton
 -- corresponds to the order in which the health check was defined, and a
 -- text describing the reason.
 data Reason = Reason
-    { reasonId   :: {-# UNPACK #-} !Int
+    { reasonId   :: {-# UNPACK #-} !Word
     -- TODO: Check that the Text here is not causing us performance grief.
     , reasonText :: !Text
-    } deriving (Eq, Ord, Show)
+    } deriving (Eq, Ord, Show, Generic)
 
 instance ToJSON Reason where
     toJSON = String . formatReason
@@ -73,7 +74,7 @@ instance FromJSON Reason where
             Left err -> fail "A Reason should be formated as '<integer> - <reason>'"
 
 -- | The Check monad allows us to collect health predicates and tag them.
-newtype Check a = Check { unCheck :: StateT Int (Writer Status) a }
+newtype Check a = Check { unCheck :: StateT Word (Writer Status) a }
     deriving (Functor, Applicative, Monad)
 
 -- | Perform a health check with the given name. The check fails if the @Bool@
