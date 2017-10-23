@@ -80,7 +80,7 @@ we control" structure after taking into account the various distributions
 of failure. For this we can use the `maintainCluster` function which goes
 through and randomly kills components based on their MTTF and MTTR.
  
-maintainCluster :: MonadSample m => Cluster -> m Cluster
+    maintainCluster :: MonadSample m => Cluster -> m Cluster
  
 Thus, we now have a distribution of `Cluster`s. We are no longer 100%
 certain about our total block storage, but we have a distribution of
