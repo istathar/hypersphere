@@ -20,6 +20,7 @@ library
     Hypersphere.Check,
     Hypersphere.PhysicalInput,
     Hypersphere.Sample
+    Hypersphere.Density
 
   build-depends:
     base >=4.9 && <4.10,
@@ -30,6 +31,7 @@ library
     containers,
     contravariant,
     data-default,
+    deepseq,
     directory,
     lens,
     monad-bayes,
@@ -39,7 +41,8 @@ library
     time,
     transformers,
     unordered-containers,
-    vector
+    vector,
+    vector-algorithms
   hs-source-dirs:      src
   default-language:    Haskell2010
 
@@ -67,6 +70,7 @@ test-suite test
   build-depends:
     base >=4.9 && <4.10,
     tasty,
+    tasty-hunit,
     tasty-quickcheck,
     quickcheck-instances,
     aeson,
@@ -77,3 +81,14 @@ test-suite test
     hypersphere,
     monad-bayes,
     text
+
+benchmark bench
+  type: exitcode-stdio-1.0
+  hs-source-dirs: bench
+  main-is: Main.hs
+  build-depends:
+    base >=4.9 && <4.10,
+    criterion,
+    deepseq,
+    hypersphere
+  ghc-options: -O2

@@ -1,6 +1,6 @@
 # Hypersphere
 
-Service or infrastructure availability reporting using probabilistic
+Service or infrastructure availability reporting using a probabilistic
 model of why things are failing.
 
 ## Goals
