@@ -12,10 +12,10 @@ import Test.Tasty.QuickCheck as QC
 main = defaultMain tests
 
 tests :: TestTree
-tests = testGroup "Tests" [properties]
+tests = testGroup "Tests" [properties,unitTests]
 
 properties :: TestTree
-properties = testGroup "Properties" [unitTests,qcProps]
+properties = testGroup "Properties" [qcProps]
 
 roundTripJSON :: (Eq a, Aeson.FromJSON a, Aeson.ToJSON a) => a -> Bool
 roundTripJSON a = Aeson.fromJSON (Aeson.toJSON a) == Aeson.Success a
