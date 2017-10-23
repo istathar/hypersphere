@@ -4,13 +4,17 @@
 -- is that the distribution of metrics can be recorded using the @kde@
 -- function, and then sampled in the model using @sampleDensity@.
 {-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DeriveAnyClass #-}
 module Hypersphere.Density where
 
+import Control.DeepSeq
 import Control.Monad.Bayes.Class
 import Data.Foldable
 import Data.List.NonEmpty (NonEmpty)
 import qualified Data.List.NonEmpty as NonEmpty
 import qualified Data.Vector.Unboxed as UV
+import GHC.Generics
 import Graphics.Rendering.Chart.Backend.Diagrams
 import Graphics.Rendering.Chart.Easy
 import qualified Statistics.Sample.KernelDensity as S
@@ -20,9 +24,9 @@ import qualified Statistics.Sample.KernelDensity as S
 -- TODO: Should we store the cummulutive density to prevent recalculating
 -- it all the time when sampling?
 data Density = Density
-    { dMesh :: UV.Vector Double
-    , dDensity :: UV.Vector Double
-    }
+    { dMesh :: !(UV.Vector Double)
+    , dDensity :: !(UV.Vector Double)
+    } deriving (Eq, Ord, Show, Generic, NFData)
 
 -- | Find the area under the curve of the probability density. Should
 -- be pretty close to 1.
