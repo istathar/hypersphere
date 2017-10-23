@@ -134,6 +134,9 @@ monad. An example of some health checks might be the following.
     
         check "Average Request Latency High" $
             averageRequestLatency < 5.0
+
+        check "Network Bandwidth saturated" $
+            peakSustainedNetworkThroughput < 35.0 -- Gb/s
  
 The health checks are actually performed on the distribution of the
 inputs, rather than a concrete instance, but we don't care about that
@@ -145,6 +148,7 @@ like this
     Service is up with probability: 0.940
     
     Risk items:
+       0.109	3 - Network Bandwidth Saturated
        0.057	1 - Storage Space Low
        0.003	2 - Average Request Latency High
  
