@@ -34,6 +34,7 @@ library
     deepseq,
     directory,
     lens,
+    log-domain,
     monad-bayes,
     mtl,
     statistics,
