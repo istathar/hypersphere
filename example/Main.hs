@@ -105,7 +105,11 @@ data MetricInput = MetricInput
 main :: IO ()
 main = do
     putStrLn "Plotting total Storage storage distribution to \"total_storage.svg\"..."
-    quickPlot "total_storage.svg" "Total Available Storage (TB)" $ blockStorage . clusterToFixedInput <$> maintainCluster cluster
+
+    -- We use `quickPlot` instead of `quickPlotDensity` because the storage
+    -- is actually a discrete distribution (integer number of disks available).
+    quickPlot "total_storage.svg" "Total Available Storage (TB)"
+        $ blockStorage . clusterToFixedInput <$> maintainCluster cluster
 
     quickCheckPrint $ do
         f <- clusterToFixedInput <$> maintainCluster cluster
