@@ -114,7 +114,7 @@ main = do
     plotDensity "used_storage.svg" "Used Storage Density (TB)" usedStorageDensity
 
     putStrLn "Plotting request latency KDE: request_latency.svg"
-    plotDensity "request_latency.svg" "Request Latency Density (TB)" averageRequestLatencyDensity
+    plotDensity "request_latency.svg" "Request Latency Density (ms)" averageRequestLatencyDensity
 
     -- We use `quickPlot` instead of `quickPlotDensity` because the storage
     -- is actually a discrete distribution (integer number of disks available).
