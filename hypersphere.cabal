@@ -80,7 +80,8 @@ test-suite test
     containers,
     hypersphere,
     monad-bayes,
-    text
+    text,
+    vector
 
 benchmark bench
   type: exitcode-stdio-1.0
@@ -90,5 +91,6 @@ benchmark bench
     base >=4.9 && <4.10,
     criterion,
     deepseq,
-    hypersphere
+    hypersphere,
+    vector
   ghc-options: -O2

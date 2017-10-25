@@ -1,5 +1,8 @@
 {-# LANGUAGE OverloadedLists #-}
+module Main where
+
 import Criterion.Main
+import qualified Data.Vector.Unboxed as UV
 import Hypersphere.Density
 
 
@@ -13,5 +16,6 @@ main = defaultMain
         bgroup "integrate"
             [ bench "all" $ whnf integrate env
             , bench "scanned" $ nf scanIntegral env
+            , bench "last scanned" $ nf (UV.last . scanIntegral) env
             ]
     ]
