@@ -21,22 +21,30 @@ library
     Hypersphere.PhysicalInput,
     Hypersphere.Sample
     Hypersphere.Density
+    Hypersphere.Metric
+    Hypersphere.Metric.Csv
 
   build-depends:
     base >=4.9 && <4.10,
     aeson,
     attoparsec,
+    bytestring,
+    cassava,
     Chart,
     Chart-diagrams,
+    chronologique,
     containers,
     contravariant,
     data-default,
     deepseq,
     directory,
+    influxdb,
     lens,
     log-domain,
     monad-bayes,
     mtl,
+    mwc-random,
+    safe,
     statistics,
     text,
     time,

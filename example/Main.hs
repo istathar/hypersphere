@@ -4,11 +4,12 @@ module Main where
 
 import Control.Monad
 import Control.Monad.Bayes.Class
-import qualified Data.List.NonEmpty as NE
 import qualified Data.Map as Map
 import qualified Data.Text as Text
 import Hypersphere.Check
 import Hypersphere.Density
+import Hypersphere.Metric
+import Hypersphere.Metric.Csv
 import Hypersphere.PhysicalInput
 import Hypersphere.Sample
 import Text.Printf
@@ -110,19 +111,25 @@ data MetricInput = MetricInput
 
 main :: IO ()
 main = do
+    let
+        startTime = read "1509332346"
+        endTime   = read "1509336546"
     -- First we read in our metrics
-    usedStorageDensity <- kde . NE.fromList . fmap read . lines <$> readFile "example/disk_usage.dat"
-    averageRequestLatencyDensity <- kde . NE.fromList . fmap read . lines <$> readFile "example/request_latency.dat"
-    peakNetworkThroughputDensity <- kde . NE.fromList . fmap read . lines <$> readFile "example/network_throughput.dat"
+    usedStorageMetric <- readMetricCsv "example/disk_usage.dat"
+    averageRequestLatencyMetric <- readMetricCsv "example/request_latency.dat"
+    peakNetworkThroughputMetric <- readMetricCsv "example/network_throughput.dat"
 
     putStrLn "Plotting used storage KDE: used_storage.svg"
-    plotDensity "used_storage.svg" "Used Storage Density (TB)" usedStorageDensity
+    plotDensity "used_storage.svg" "Used Storage Density (TB)"
+        $ metricToKdeTime usedStorageMetric startTime endTime
 
     putStrLn "Plotting request latency KDE: request_latency.svg"
-    plotDensity "request_latency.svg" "Request Latency Density (ms)" averageRequestLatencyDensity
+    plotDensity "request_latency.svg" "Request Latency Density (ms)"
+        $ metricToKdeTime averageRequestLatencyMetric startTime endTime
 
     putStrLn "Plotting network throughput KDE: network_throughput.svg"
-    plotDensity "network_throughput.svg" "Network Throughput (Gb/s)" peakNetworkThroughputDensity
+    plotDensity "network_throughput.svg" "Network Throughput (Gb/s)"
+        $ metricToKdeTime peakNetworkThroughputMetric startTime endTime
 
     -- We use `quickPlot` instead of `quickPlotDensity` because the storage
     -- is actually a discrete distribution (integer number of disks available).
@@ -135,9 +142,9 @@ main = do
 
         -- Fixed distributions for now.
         m <- do
-            usedStorage <- sampleDensity usedStorageDensity
-            averageRequestLatency <- sampleDensity averageRequestLatencyDensity
-            peakNetworkThroughput <- sampleDensity peakNetworkThroughputDensity
+            usedStorage <- sampleMetric usedStorageMetric startTime endTime
+            averageRequestLatency <- sampleMetric averageRequestLatencyMetric startTime endTime
+            peakNetworkThroughput <- sampleMetric peakNetworkThroughputMetric startTime endTime
 
             return MetricInput{..}
 

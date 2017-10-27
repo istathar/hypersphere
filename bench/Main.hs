@@ -4,6 +4,7 @@ module Main where
 import Criterion.Main
 import qualified Data.Vector.Unboxed as UV
 import Hypersphere.Density
+import qualified Hypersphere.Metric as Metric
 
 
 main :: IO ()
@@ -18,4 +19,8 @@ main = defaultMain
             , bench "scanned" $ nf scanIntegral env
             , bench "last scanned" $ nf (UV.last . scanIntegral) env
             ]
+    , bgroup "findNearest"
+        [ bench "first" $ nf (\(Just m) -> Metric.findNearest m 0) $ Metric.fromList $ zip [1..5000] [0.1,0.2..]
+        , bench "last" $ nf (\(Just m) -> Metric.findNearest m 6000) $ Metric.fromList $ zip [1..5000] [0.1,0.2..]
+        ]
     ]

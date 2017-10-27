@@ -1,10 +1,10 @@
-resolver: lts-9.9
-
+flags: {}
+extra-package-dbs: []
 packages:
 - .
 - location: https://github.com/luke-clifton/monad-bayes/archive/4227c548abc477247a7e3cee932a49c6bdfe29f9.zip
   extra-dep: true
-
-flags: {}
-
-extra-package-dbs: []
+extra-deps:
+- chronologique-0.3.0.0
+- influxdb-1.2.2
+resolver: lts-9.9
