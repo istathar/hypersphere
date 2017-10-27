@@ -1,5 +1,6 @@
 .DS_Store
 .*.swp
 .*.swo
-dist/
-.stack-work/
+/dist/
+/.stack-work/
+/tags
