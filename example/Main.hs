@@ -121,6 +121,9 @@ main = do
     putStrLn "Plotting request latency KDE: request_latency.svg"
     plotDensity "request_latency.svg" "Request Latency Density (ms)" averageRequestLatencyDensity
 
+    putStrLn "Plotting network throughput KDE: network_throughput.svg"
+    plotDensity "network_throughput.svg" "Network Throughput (Gb/s)" peakNetworkThroughputDensity
+
     -- We use `quickPlot` instead of `quickPlotDensity` because the storage
     -- is actually a discrete distribution (integer number of disks available).
     putStrLn "Plotting total available storage storage distribution: total_storage.svg"

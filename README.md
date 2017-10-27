@@ -159,11 +159,11 @@ The end result of all this is that we can generate a report that looks
 like this
 
     Service is up with probability: 0.940
-    
+ 
     Risk items:
-       0.109	3 - Network Bandwidth Saturated
-       0.057	1 - Storage Space Low
-       0.003	2 - Average Request Latency High
+        0.095	1 - Storage Space Low
+        0.021	3 - Network Bandwidth saturated
+        0.014	2 - Average Request Latency High
  
 The report contains the probability that everything is OK over the time
 period that was aggregated over. It also includes the risk items sorted
