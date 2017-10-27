@@ -1,5 +1,8 @@
 # Hypersphere
 
+> _In geometry of higher dimensions, a hypersphere is the set of points at a
+> constant distance from a given point called its center._
+
 Service or infrastructure availability reporting using a probabilistic
 model of why things are failing.
 
