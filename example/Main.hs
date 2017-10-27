@@ -96,12 +96,16 @@ healthChecks FixedInput{..} MetricInput{..} = do
     check "Average Request Latency High" $
         averageRequestLatency < 100.0
 
+    check "Network Bandwidth saturated" $
+        peakNetworkThroughput < 35.0 -- Gb/s
+
 -- | The @MetricInput@ of our model corresponds to measurements we made. These
 -- distributions *are* learnt, and fluctuate over time in ways we don't
 -- understand or control directly.
 data MetricInput = MetricInput
     { usedStorage :: Double
     , averageRequestLatency :: Double
+    , peakNetworkThroughput :: Double
     } deriving (Show, Eq, Ord)
 
 main :: IO ()
@@ -109,6 +113,7 @@ main = do
     -- First we read in our metrics
     usedStorageDensity <- kde . NE.fromList . fmap read . lines <$> readFile "example/disk_usage.dat"
     averageRequestLatencyDensity <- kde . NE.fromList . fmap read . lines <$> readFile "example/request_latency.dat"
+    peakNetworkThroughputDensity <- kde . NE.fromList . fmap read . lines <$> readFile "example/network_throughput.dat"
 
     putStrLn "Plotting used storage KDE: used_storage.svg"
     plotDensity "used_storage.svg" "Used Storage Density (TB)" usedStorageDensity
@@ -129,6 +134,8 @@ main = do
         m <- do
             usedStorage <- sampleDensity usedStorageDensity
             averageRequestLatency <- sampleDensity averageRequestLatencyDensity
+            peakNetworkThroughput <- sampleDensity peakNetworkThroughputDensity
+
             return MetricInput{..}
 
         return . runChecks $ healthChecks f m

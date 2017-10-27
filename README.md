@@ -143,10 +143,10 @@ monad. An example of some health checks might be the following.
             (usedStorage / blockStorage) < 0.9
     
         check "Average Request Latency High" $
-            averageRequestLatency < 5.0
+            averageRequestLatency < 100.0
 
         check "Network Bandwidth saturated" $
-            peakSustainedNetworkThroughput < 35.0 -- Gb/s
+            peakNetworkThroughput < 35.0 -- Gb/s
  
 The health checks are actually performed on the distribution of the
 inputs, rather than a concrete instance, but we don't care about that
