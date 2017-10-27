@@ -1,6 +1,7 @@
 module Main where
 
 import qualified Data.Aeson as Aeson
+import qualified Data.Vector.Unboxed as UV
 import Hypersphere.Check
 import Hypersphere.Density
 import Hypersphere.Sample
@@ -42,6 +43,8 @@ qcProps = testGroup "(QuickCheck)"
     , QC.testProperty "Probability distribution sums to 1" $ nearlyEqual 1.0 . integrate . kde
     , QC.testProperty "Rounding is divisible by target" $
         \(NonZero r) t -> let n = (rounding r t)/r in nearlyEqual 0 (n - fromIntegral (round n))
+    , QC.testProperty "Integration, scan = integrate" $ \x ->
+        let v = kde x in nearlyEqual (UV.last . scanIntegral $ v) (integrate v)
     ]
 
 --------------------------------------------------

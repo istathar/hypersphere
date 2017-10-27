@@ -4,9 +4,11 @@ module Main where
 
 import Control.Monad
 import Control.Monad.Bayes.Class
+import qualified Data.List.NonEmpty as NE
 import qualified Data.Map as Map
 import qualified Data.Text as Text
 import Hypersphere.Check
+import Hypersphere.Density
 import Hypersphere.PhysicalInput
 import Hypersphere.Sample
 import Text.Printf
@@ -92,7 +94,7 @@ healthChecks FixedInput{..} MetricInput{..} = do
         (usedStorage / blockStorage) < 0.9
 
     check "Average Request Latency High" $
-        averageRequestLatency < 5.0
+        averageRequestLatency < 100.0
 
 -- | The @MetricInput@ of our model corresponds to measurements we made. These
 -- distributions *are* learnt, and fluctuate over time in ways we don't
@@ -104,16 +106,29 @@ data MetricInput = MetricInput
 
 main :: IO ()
 main = do
-    putStrLn "Plotting total Storage storage distribution to \"total_storage.svg\"..."
-    quickPlot "total_storage.svg" "Total Available Storage (TB)" $ blockStorage . clusterToFixedInput <$> maintainCluster cluster
+    -- First we read in our metrics
+    usedStorageDensity <- kde . NE.fromList . fmap read . lines <$> readFile "example/disk_usage.dat"
+    averageRequestLatencyDensity <- kde . NE.fromList . fmap read . lines <$> readFile "example/request_latency.dat"
+
+    putStrLn "Plotting used storage KDE: used_storage.svg"
+    plotDensity "used_storage.svg" "Used Storage Density (TB)" usedStorageDensity
+
+    putStrLn "Plotting request latency KDE: request_latency.svg"
+    plotDensity "request_latency.svg" "Request Latency Density (ms)" averageRequestLatencyDensity
+
+    -- We use `quickPlot` instead of `quickPlotDensity` because the storage
+    -- is actually a discrete distribution (integer number of disks available).
+    putStrLn "Plotting total available storage storage distribution: total_storage.svg"
+    quickPlot "total_storage.svg" "Total Available Storage (TB)"
+        $ blockStorage . clusterToFixedInput <$> maintainCluster cluster
 
     quickCheckPrint $ do
         f <- clusterToFixedInput <$> maintainCluster cluster
 
         -- Fixed distributions for now.
         m <- do
-            usedStorage <- normal 500 10
-            averageRequestLatency <- normal 3 0.8
+            usedStorage <- sampleDensity usedStorageDensity
+            averageRequestLatency <- sampleDensity averageRequestLatencyDensity
             return MetricInput{..}
 
         return . runChecks $ healthChecks f m

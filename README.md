@@ -119,6 +119,16 @@ can fluctuate that much, then we are not in a safe position, especially
 because our available disk also fluctuates. So even though we might be OK
 right now, we are statistically not OK and are in urgent need of either
 buying more disk, or deleting more data.
+
+When running the model, we have to feed in a probability distribution for
+our metrics. This is something that we should observe, rather than something
+that we should guess. In order to make this process easier, hypersphere
+comes with some utilities for non-parametric distributions. We can use
+a Kernel Density Estimator (KDE) to come up with a suitable distribution
+to be used in the model. Here is a KDE of request latency based on
+the observations in [example/request_latency.dat](example/request_latency.dat).
+
+![Request latency KDE](example/request_latency.svg)
  
 Deciding if we are up or down is done by performing a bunch of health
 checks which return the status of the cluster. The status of the cluster
