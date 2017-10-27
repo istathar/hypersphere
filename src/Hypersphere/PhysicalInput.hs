@@ -97,7 +97,7 @@ maintainNode Node{..} = do
 class Maintainable a where
 
     -- | Returns @Nothing@ if the thing is currently out of order.
-    -- Returns @Just@ the thing if it's not our of order.
+    -- Returns @Just@ the thing if it's not out of order.
     maintain :: MonadSample m => a -> m (Maybe a)
     default maintain :: (MonadSample m, Generic a, GMaintainable (Rep a)) => a -> m (Maybe a)
     maintain a = do
