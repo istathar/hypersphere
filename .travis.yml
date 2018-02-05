@@ -1,0 +1,22 @@
+sudo: false
+
+env:
+ matrix:
+   - GHCVER=8.0 STACK_YAML=stack.yaml
+
+install:
+  # stack
+  - mkdir -p ~/.local/bin
+  - travis_retry curl -L https://github.com/commercialhaskell/stack/releases/download/v1.2.0/stack-1.2.0-linux-x86_64.tar.gz | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack'
+  - export PATH=~/.local/bin:$PATH
+  - stack --version
+
+script:
+  - stack setup
+  - stack update
+  - stack build -j1
+  - stack test
+
+cache:
+  directories:
+  - $HOME/.stack
