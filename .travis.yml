@@ -1,5 +1,12 @@
 sudo: false
 
+git:
+  submodules: true  # whether to recursively clone submodules
+
+cache:
+  directories:
+    - $HOME/.stack
+
 env:
  matrix:
    - GHCVER=8.0 STACK_YAML=stack.yaml
