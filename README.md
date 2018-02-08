@@ -21,10 +21,10 @@ availability of services and/or infrastructure.
 ## Basic Overview
 
 There are two types of inputs into the model.
- 
+
  * Things we control
  * Things we observe
- 
+
 "Things we control" means things like what hardware we actually have, what
 software we have installed on each machine, and our maintenance schedules.
 
@@ -48,43 +48,43 @@ failure (MTTF) and mean time to repair (MTTR) of the various components.
         { mttf :: Double -- Mean Time To Failure
         , mttr :: Double -- Mean Time To Repair
         }
-    
+
     data Cluster = Cluster
         { racks :: Map Name Rack
         }
-    
+
     data Rack = Rack
         { nodes :: Map Name Node
         , rackMaintenance :: Maintenance
         }
-    
+
     data Node = Node
         { disks :: [Disk]
         , nodeMaintenance :: Maintenance
         , role :: [Text]
         }
-    
+
     data Disk = Disk
         { diskMaintenance :: Maintenance
         , diskSize :: Double -- In TB
         }
- 
+
 From the "things we control" input we can distil a useful selection of
 facts that are useful for determining the cluster status. We can create
 a record of these useful facts that might look like this.
- 
+
     data FixedInput = FixedInput
         { blockStorage :: Double
         , numberOfLeaders :: Int
         } deriving (Eq, Ord, Show)
- 
+
 But we don't do so directly. We create this input by sampling the "things
 we control" structure after taking into account the various distributions
 of failure. For this we can use the `maintainCluster` function which goes
 through and randomly kills components based on their MTTF and MTTR.
- 
+
     maintainCluster :: MonadSample m => Cluster -> m Cluster
- 
+
 Thus, we now have a distribution of `Cluster`s. We are no longer 100%
 certain about our total block storage, but we have a distribution of
 values that it could be, and their corresponding probabilities. There
@@ -95,7 +95,7 @@ the same time. The following is the distribution of total (usable)
 disk space for an example cluster (see the [example](example) directory).
 
 ![Probability distribution of total capacity](example/total_storage.svg)
- 
+
 This alone is not enough for us to know if we have a problem. We need
 to also look at the metrics to see if the used block storage is near (or
 exceeds!) our total available storage (after taking into account
@@ -104,9 +104,9 @@ is 150TB, we look pretty safe, but if our used space is 158TB, even if
 right now we have the space, there is a relatively high chance that
 something could fail at any moment and cause us to be exceeding our
 available disk space.
- 
+
 Let's step back a moment and look at some metric inputs.
- 
+
     data MetricInput = MetricInput
         { usedStorage :: Double
         , averageRequestLatency :: Double
@@ -132,25 +132,25 @@ to be used in the model. Here is a KDE of request latency based on
 the observations in [example/request_latency.dat](example/request_latency.dat).
 
 ![Request latency KDE](example/request_latency.svg)
- 
+
 Deciding if we are up or down is done by performing a bunch of health
 checks which return the status of the cluster. The status of the cluster
 is a set of reasons why the cluster is currently not OK. The aim is
 for that set to be empty. Health checks are defined using the `Check`
 monad. An example of some health checks might be the following.
- 
+
     healthChecks :: FixedInput -> MetricInput -> Check ()
     healthChecks FixedInput{..} MetricInput{..} = do
-    
+
         check "Storage Space Low" $
             (usedStorage / blockStorage) < 0.9
-    
+
         check "Average Request Latency High" $
             averageRequestLatency < 100.0
 
         check "Network Bandwidth saturated" $
             peakNetworkThroughput < 35.0 -- Gb/s
- 
+
 The health checks are actually performed on the distribution of the
 inputs, rather than a concrete instance, but we don't care about that
 when defining the checks themselves.
@@ -159,12 +159,12 @@ The end result of all this is that we can generate a report that looks
 like this
 
     Service is up with probability: 0.940
- 
+
     Risk items:
         0.095	1 - Storage Space Low
         0.021	3 - Network Bandwidth saturated
         0.014	2 - Average Request Latency High
- 
+
 The report contains the probability that everything is OK over the time
 period that was aggregated over. It also includes the risk items sorted
 by their probability of occurring.
