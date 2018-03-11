@@ -1,6 +1,6 @@
 # Hypersphere
 
-[![Continuous Integration status][status-png]][status]
+[![Build Status](http://travis-ci.org/afcowie/hypersphere.svg)](https://travis-ci.org/afcowie/hypersphere)
 
 > _In geometry of higher dimensions, a hypersphere is the set of points at a
 > constant distance from a given point called its center._
@@ -175,4 +175,4 @@ The probability that the service was up should correspond to your service
 level agreements (SLA). If you have an SLA of 99% uptime in a given month,
 then you want that number to be above 99% for your monthly aggregation.
 
-[status]: http://travis-ci.org/afcowie/hypersphere?branch=master
+[status]: 
