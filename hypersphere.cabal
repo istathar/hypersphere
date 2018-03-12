@@ -25,7 +25,7 @@ library
     Hypersphere.Metric.Csv
 
   build-depends:
-    base >=4.9 && <4.10,
+    base >=4.9 && <4.11,
     aeson,
     attoparsec,
     bytestring,
@@ -59,7 +59,7 @@ executable example
   main-is: Main.hs
   ghc-options: -O2
   build-depends:
-    base >=4.9 && <4.10,
+    base >=4.9 && <4.11,
     aeson,
     bytestring,
     Chart,
@@ -77,7 +77,7 @@ test-suite test
   hs-source-dirs: test
   main-is: Main.hs
   build-depends:
-    base >=4.9 && <4.10,
+    base >=4.9 && <4.11,
     tasty,
     tasty-hunit,
     tasty-quickcheck,
@@ -97,7 +97,7 @@ benchmark bench
   hs-source-dirs: bench
   main-is: Main.hs
   build-depends:
-    base >=4.9 && <4.10,
+    base >=4.9 && <4.11,
     criterion,
     deepseq,
     hypersphere,
