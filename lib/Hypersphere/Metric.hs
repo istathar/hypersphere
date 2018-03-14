@@ -28,6 +28,7 @@ import Control.Monad.Bayes.Sampler
 import Control.Monad.Bayes.Sequential
 import Control.Monad.Reader
 import Control.Monad.ST
+import Data.Aeson
 import Data.Bits
 import Data.Int
 import Data.List.NonEmpty (NonEmpty(..))
@@ -36,6 +37,7 @@ import qualified Data.Vector.Generic as G
 import qualified Data.Vector.Generic.Mutable as M
 import qualified Data.Vector.Unboxed as UV
 import qualified Data.Vector.Unboxed.Mutable as UM
+import qualified Data.Vector as V
 import Hypersphere.Density
 import System.Random.MWC (initialize)
 
@@ -44,8 +46,30 @@ import System.Random.MWC (initialize)
 newtype Metric = Metric { getAscendingVector :: UV.Vector Sample }
     deriving (Eq, Ord, Show)
 
+instance ToJSON Metric where
+    toJSON = Array . G.map toJSON . G.convert . getAscendingVector
+
+instance FromJSON Metric where
+    parseJSON = withArray "Metric" $ \a -> do
+        v <- G.mapM parseJSON a
+        let
+            uv = G.convert v
+        case fromVector uv of
+            Nothing -> fail "A Metric must contain at least one data point"
+            Just m  -> pure m
+
 data Sample = Sample !TimeStamp !Double
     deriving (Eq, Ord, Show)
+
+instance ToJSON Sample where
+    toJSON (Sample ts val) = Array (V.fromList [toJSON (unTimeStamp ts), toJSON val])
+
+instance FromJSON Sample where
+    parseJSON = withArray "Sample" $ \a -> do
+        when (V.length a /= 2) $ fail "Sample array must have two elements"
+        ts  <- TimeStamp <$> parseJSON (a V.! 0)
+        val <- parseJSON (a V.! 1)
+        pure $ Sample ts val
 
 newtype instance UM.MVector s Sample = MV_Sample (UM.MVector s (TimeStamp, Double))
 newtype instance UV.Vector Sample = V_Sample (UV.Vector (TimeStamp, Double))
