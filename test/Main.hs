@@ -1,9 +1,11 @@
 module Main where
 
+import Chrono.TimeStamp
 import qualified Data.Aeson as Aeson
 import qualified Data.Vector.Unboxed as UV
 import Hypersphere.Check
 import Hypersphere.Density
+import Hypersphere.Metric as Metric
 import Hypersphere.Sample
 import Test.QuickCheck.Instances ()
 import Test.Tasty
@@ -40,6 +42,8 @@ unitTests = testGroup "Unit Tests"
 qcProps :: TestTree
 qcProps = testGroup "(QuickCheck)"
     [ QC.testProperty "Reason JSON" (roundTripJSON :: Reason -> Bool)
+    , QC.testProperty "Metric JSON" (roundTripJSON :: Metric -> Bool)
+    , QC.testProperty "Density JSON" (roundTripJSON :: Density -> Bool)
     , QC.testProperty "Probability distribution sums to 1" $ nearlyEqual 1.0 . integrate . kde
     , QC.testProperty "Rounding is divisible by target" $
         \(NonZero r) t -> let n = (rounding r t)/r in nearlyEqual 0 (n - fromIntegral (round n))
@@ -54,3 +58,15 @@ qcProps = testGroup "(QuickCheck)"
 instance Arbitrary Reason where
     arbitrary = Reason <$> arbitrary <*> arbitrary
     shrink = genericShrink
+
+instance Arbitrary Sample where
+    arbitrary = Sample <$> (TimeStamp <$> arbitrary) <*> arbitrary
+
+instance Arbitrary Metric where
+    arbitrary = do
+        ls <- getNonEmpty <$> arbitrary
+        let Just m = Metric.fromList ls
+        pure m
+
+instance Arbitrary Density where
+    arbitrary = metricToKdeIndependent <$> arbitrary

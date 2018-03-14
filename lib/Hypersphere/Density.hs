@@ -10,6 +10,7 @@ module Hypersphere.Density where
 
 import Control.DeepSeq
 import Control.Monad.Bayes.Class
+import Data.Aeson (ToJSON, FromJSON)
 import Data.Foldable
 import Data.List.NonEmpty (NonEmpty)
 import qualified Data.List.NonEmpty as NonEmpty
@@ -27,6 +28,9 @@ data Density = Density
     { dMesh :: !(UV.Vector Double)
     , dDensity :: !(UV.Vector Double)
     } deriving (Eq, Ord, Show, Generic, NFData)
+
+instance ToJSON Density
+instance FromJSON Density
 
 -- | Find the area under the curve of the probability density. Should
 -- be pretty close to 1.
