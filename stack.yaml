@@ -7,4 +7,5 @@ packages:
 extra-deps:
 - chronologique-0.3.0.0
 - influxdb-1.2.2
+- diagrams-rasterific-1.4
 resolver: lts-10.9

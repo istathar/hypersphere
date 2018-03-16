@@ -8,6 +8,7 @@
 {-# LANGUAGE BangPatterns #-}
 module Hypersphere.Metric
     ( Metric()
+    , getAscendingVector
     , fromList
     , fromVector
     , TimeStamp
@@ -16,6 +17,7 @@ module Hypersphere.Metric
     , metricToKdeTime
     , metricToKdeIndependent
     , Sample(..)
+    , sliceMetric
     )
     where
 
@@ -45,6 +47,11 @@ import System.Random.MWC (initialize)
 -- their @TimeStamp@s. There has to be at least one sample in a @Metric@.
 newtype Metric = Metric { getAscendingVector :: UV.Vector Sample }
     deriving (Eq, Ord, Show)
+
+sliceMetric :: Metric -> TimeStamp -> TimeStamp -> Metric
+sliceMetric (Metric v) low high = Metric
+    $ UV.takeWhile (\(Sample t _) -> t <= high)
+    $ UV.dropWhile (\(Sample t _) -> t < low) v
 
 instance ToJSON Metric where
     toJSON = Array . G.map toJSON . G.convert . getAscendingVector

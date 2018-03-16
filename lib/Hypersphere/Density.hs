@@ -15,9 +15,13 @@ import Data.Foldable
 import Data.List.NonEmpty (NonEmpty)
 import qualified Data.List.NonEmpty as NonEmpty
 import qualified Data.Vector.Unboxed as UV
+import Data.Monoid (Any)
+import qualified Diagrams.Core as D
 import GHC.Generics
 import Graphics.Rendering.Chart.Backend.Diagrams
 import Graphics.Rendering.Chart.Easy
+import           Linear.V2 (V2)
+import qualified Linear.V2 as V2
 import qualified Statistics.Sample.KernelDensity as S
 
 -- | Represents a Kernel Density Estimate.
