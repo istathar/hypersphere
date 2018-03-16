@@ -34,3 +34,11 @@ readMetricCsv fp = do
     case decodeMetricCsv bs of
         Left s -> fail s
         Right m -> return m
+
+-- TODO: readMetricCsv needs to have a builtin slicing mechanism for selecting
+-- the time range rather than reading it all in to memory
+
+readMetricCsvSlice :: FilePath -> TimeStamp -> TimeStamp -> IO Metric
+readMetricCsvSlice fp start stop = do
+    m <- readMetricCsv fp
+    pure $ sliceMetric m start stop
