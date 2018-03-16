@@ -115,9 +115,9 @@ main = do
         startTime = read "1509332346"
         endTime   = read "1509336546"
     -- First we read in our metrics
-    usedStorageMetric <- readMetricCsv "example/disk_usage.dat"
-    averageRequestLatencyMetric <- readMetricCsv "example/request_latency.dat"
-    peakNetworkThroughputMetric <- readMetricCsv "example/network_throughput.dat"
+    Just usedStorageMetric <- readMetricCsv "example/disk_usage.dat"
+    Just averageRequestLatencyMetric <- readMetricCsv "example/request_latency.dat"
+    Just peakNetworkThroughputMetric <- readMetricCsv "example/network_throughput.dat"
 
     putStrLn "Plotting used storage KDE: used_storage.svg"
     plotDensity "used_storage.svg" "Used Storage Density (TB)"

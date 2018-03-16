@@ -48,8 +48,8 @@ import System.Random.MWC (initialize)
 newtype Metric = Metric { getAscendingVector :: UV.Vector Sample }
     deriving (Eq, Ord, Show)
 
-sliceMetric :: Metric -> TimeStamp -> TimeStamp -> Metric
-sliceMetric (Metric v) low high = Metric
+sliceMetric :: Metric -> TimeStamp -> TimeStamp -> Maybe Metric
+sliceMetric (Metric v) low high = fromVector
     $ UV.takeWhile (\(Sample t _) -> t <= high)
     $ UV.dropWhile (\(Sample t _) -> t < low) v
 

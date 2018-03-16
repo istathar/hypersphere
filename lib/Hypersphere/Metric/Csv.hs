@@ -28,17 +28,20 @@ decodeMetricCsv bs = do
         Nothing -> Left "You need at least one metric"
         Just m -> Right m
 
-readMetricCsv :: FilePath -> IO Metric
+
+readMetricCsv :: FilePath -> IO (Maybe Metric)
 readMetricCsv fp = do
     bs <- LB.readFile fp
-    case decodeMetricCsv bs of
-        Left s -> fail s
-        Right m -> return m
+    pure $ case decodeMetricCsv bs of
+        Left s -> Nothing
+        Right m -> Just m
 
 -- TODO: readMetricCsv needs to have a builtin slicing mechanism for selecting
 -- the time range rather than reading it all in to memory
 
-readMetricCsvSlice :: FilePath -> TimeStamp -> TimeStamp -> IO Metric
+readMetricCsvSlice :: FilePath -> TimeStamp -> TimeStamp -> IO (Maybe Metric)
 readMetricCsvSlice fp start stop = do
     m <- readMetricCsv fp
-    pure $ sliceMetric m start stop
+    pure $ do
+        m' <- m
+        sliceMetric m' start stop
