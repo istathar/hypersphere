@@ -41,6 +41,14 @@ newtype Status = Status { getReasons :: Set Reason }
 instance ToJSON Status
 instance FromJSON Status
 
+-- | Range based checks
+data RangedCheck a = Thresholds
+    { red    :: a
+    , orange :: a
+    , green  :: a
+    }
+
+
 -- | The value that represents the OK status.
 okStatus :: Status
 okStatus = Status mempty
